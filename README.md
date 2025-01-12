@@ -141,7 +141,8 @@ Before you begin, ensure you have the following installed:
     cd frontend
     npm run dev
     ```
-   The frontend will run on the localhost address displayed in the terminal.
+   The frontend will run on the localhost address displayed in the terminal. 
+NOTE: GO to http://localhost:5173/checkout (change port to actual port)
 
 ---
 
