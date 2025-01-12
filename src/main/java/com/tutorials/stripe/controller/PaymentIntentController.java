@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 /*@RequestMapping("/api")*/
-@CrossOrigin(origins = "http://localhost:5174") // Allow frontend origin
+@CrossOrigin(origins = "http://localhost:5173") // Allow frontend origin
 public class PaymentIntentController {
 
     private final PaymentIntentService paymentIntentService;

@@ -3,6 +3,7 @@
 
 This README provides a complete and detailed tutorial for setting up a Stripe payment integration project using React for the frontend and Spring Boot for the backend. It includes an in-depth explanation of every step, from initializing Stripe to securely handling payments and managing webhook notifications. Additionally, advanced testing tools like Stripe CLI and Ngrok are covered for local testing and debugging.
 
+
 ---
 
 ## **Project Overview**
@@ -18,6 +19,204 @@ This project demonstrates how to integrate Stripe's payment processing system in
 This integration leverages Stripe’s secure payment infrastructure, ensuring PCI DSS compliance and a seamless user experience.
 
 ---
+
+# Project Name
+
+## Overview
+This project is a full-stack application built with a Spring Boot backend and a Vite-powered React frontend. It integrates Stripe for payment processing and is designed for quick setup and deployment in a local development environment.
+
+---
+
+## Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Setup Instructions](#setup-instructions)
+    - [Clone the Repository](#clone-the-repository)
+    - [Configure the Backend](#configure-the-backend)
+    - [Configure the Frontend](#configure-the-frontend)
+    - [Install Dependencies](#install-dependencies)
+    - [Run the Application](#run-the-application)
+3. [Stripe Configuration](#stripe-configuration)
+4. [Webhook Setup with Ngrok](#webhook-setup-with-ngrok)
+5. [Running the Full Project](#running-the-full-project)
+6. [Troubleshooting](#troubleshooting)
+
+---
+
+## Prerequisites
+Before you begin, ensure you have the following installed:
+- **Java 17 or higher**
+- **Maven** (for backend dependencies)
+- **Node.js** (v14 or higher) and **npm** (for frontend dependencies)
+- **PostgreSQL** database
+- **Ngrok** (for local webhook testing)
+- Stripe account with API keys
+
+---
+
+## Setup Instructions
+
+### Clone the Repository
+1. Clone the repository and navigate to the project directory:
+    ```bash
+    git clone <repository-url>
+    cd <repository-name>
+    ```
+
+---
+
+### Configure the Backend
+1. Navigate to the `backend` folder and locate the `application.properties` file.
+2. Update the configuration with your database and Stripe details:
+
+   Example `application.properties`:
+    ```properties
+    # Database Configuration
+    spring.datasource.url=jdbc:postgresql://localhost:5432/your_database_name
+    spring.datasource.username=your_database_user
+    spring.datasource.password=your_password
+
+    # Hibernate Configuration
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.show-sql=true
+    spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+    spring.jpa.properties.hibernate.format_sql=true
+
+    # Server Configuration
+    server.address=127.0.0.1
+    server.port=4242
+
+    # Stripe Configuration
+    stripe.api.key=sk_test_your_secret_key
+    stripe.webhook.secret=whsec_your_webhook_secret
+    ```
+
+---
+
+### Configure the Frontend
+1. Navigate to the `frontend` folder.
+2. Create a `.env` file by copying the `.env.example` file:
+    ```bash
+    cp .env.example .env
+    ```
+3. Update the `.env` file with the necessary variables:
+
+   Example `.env`:
+    ```env
+    VITE_MODE=development
+    VITE_STRIPE_PK=pk_test_your_publishable_key
+    VITE_BACKEND_BASE_URL=http://127.0.0.1:4242
+    ```
+
+---
+
+### Install Dependencies
+
+#### Backend:
+1. Navigate to the `backend` folder and build the project:
+    ```bash
+    ./mvnw clean install
+    ```
+
+#### Frontend:
+1. Navigate to the `frontend` folder and install dependencies:
+    ```bash
+    cd frontend
+    npm install
+    ```
+
+---
+
+### Run the Application
+
+#### Backend:
+1. Start the backend server:
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+   The backend will run on `http://127.0.0.1:4242`.
+
+#### Frontend:
+1. Start the frontend:
+    ```bash
+    cd frontend
+    npm run dev
+    ```
+   The frontend will run on the localhost address displayed in the terminal.
+
+---
+
+## Stripe Configuration
+1. Log in to your Stripe account and copy the API keys.
+2. Add your **secret key** to the `application.properties` file:
+    ```properties
+    stripe.api.key=sk_test_your_secret_key
+    ```
+3. Add your **publishable key** to the `.env` file in the frontend:
+    ```env
+    VITE_STRIPE_PK=pk_test_your_publishable_key
+    ```
+
+---
+
+## Webhook Setup with Ngrok
+1. Install and start Ngrok to expose your local backend:
+    ```bash
+    ngrok http 4242
+    ```
+2. Copy the generated HTTPS URL and append `/webhook`.
+   Example: `https://<ngrok-id>.ngrok.io/webhook`
+3. Configure this URL in the **Webhooks** section of your Stripe Dashboard:
+    - Add events:
+        - `payment_intent.succeeded`
+        - `payment_intent.payment_failed`
+
+---
+
+## Running the Full Project
+1. Start the backend and frontend in separate terminals:
+
+   **Terminal 1: Backend**
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+   **Terminal 2: Frontend**
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+2. Verify that both the backend and frontend are running and accessible:
+    - Backend: `http://127.0.0.1:4242`
+    - Frontend: Address displayed in the terminal (e.g., `http://localhost:3000`).
+
+---
+
+## Troubleshooting
+
+### Common Issues:
+1. **Database Connection Errors**:
+    - Verify your `spring.datasource.url`, `spring.datasource.username`, and `spring.datasource.password` in the `application.properties` file.
+    - Ensure the PostgreSQL database is running and accessible.
+
+2. **CORS Errors**:
+    - Update the web configuration in the backend to allow requests from the frontend URL.
+    - Use a Chrome extension to bypass CORS for localhost during development.
+
+3. **Ngrok Issues**:
+    - Ensure Ngrok is running and the HTTPS URL is correctly configured in Stripe Webhooks.
+
+4. **Frontend Not Starting**:
+    - Ensure all dependencies are installed with `npm install`.
+
+---
+
+### Congratulations!
+Your project should now be running locally. Test the Stripe payment flows and other functionalities to ensure everything is working as expected.
+
+
+
+
 
 ## **How Stripe Payment Workflow Works**
 
@@ -35,8 +234,8 @@ This integration leverages Stripe’s secure payment infrastructure, ensuring PC
       ```json
   {
   "items": [
-  { "productId": 1, "quantity": 1 },
-  { "productId": 2, "quantity": 3 }
+  { "productId": 1, "amount": 1000 },
+  { "productId": 2, "amount": 3000 }
   ]
   }
       ```
@@ -102,7 +301,7 @@ This integration leverages Stripe’s secure payment infrastructure, ensuring PC
 ### **Step 3: Frontend Setup**
 1. **Create a React project**:
    ```bash
-   npx create-react-app stripe-integration
+   vite create frontend
    ```
 2. Install dependencies:
    ```bash
